@@ -4,7 +4,8 @@ const {
   allSuccess,
   returnDataSuccess,
 } = require('../services/successHandlers');
-const { allError } = require('../services/errorHandlers');
+const { allError,appError } = require('../services/errorHandlers');
+const appError = require('../services/')
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
@@ -34,7 +35,7 @@ const postsController = {
         .sort(timeSort);
       returnDataSuccess(res, '成功取得全部資料', result);
     } catch (err) {
-      allError(400, res, err);
+     return next(appError(400,'你沒有寫內容',next))
     }
   },
   // 取得特定 ID Post 資料

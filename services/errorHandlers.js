@@ -7,4 +7,10 @@ function allError(statusNumber, res, message) {
     })
     .end();
 }
-module.exports = { allError };
+const appError = (httpStatus,errMessage,next)=>{
+	const error = newError(errMessage);
+	error.statusCode = httpStatus;
+	error.isOperational = true;
+	next(error);
+}
+module.exports = { allError , appError};
