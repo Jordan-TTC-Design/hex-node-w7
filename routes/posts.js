@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const postsController = require('../controllers/postsController');
+const handleErrorAsync = require('../services/handleErrorAsync');
+
 const {
   allSuccess,
   returnDataSuccess,
@@ -31,6 +33,6 @@ router.post('/', postsController.newPost);
 router.delete('/all', postsController.deletePostAll);
 
 // 刪除特定 ID Post 資料
-router.delete('/:id', postsController.deletePost);
+router.delete('/:id', handleErrorAsync(postsController.deletePost));
 
 module.exports = router;

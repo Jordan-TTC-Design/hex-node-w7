@@ -5,7 +5,6 @@ const {
   returnDataSuccess,
 } = require('../services/successHandlers');
 const { allError,appError } = require('../services/errorHandlers');
-const appError = require('../services/')
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
