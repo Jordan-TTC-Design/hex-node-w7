@@ -1,0 +1,132 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "META API",
+    "description": "六角作業貼文api"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users/all": {
+      "get": {
+        "tags": [
+          "Users - 使用者"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "timeSort",
+            "in": "query"
+          },
+          {
+            "name": "q",
+            "in": "query"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/users/new": {
+      "post": {
+        "tags": [
+          "Users - 使用者"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/posts/all": {
+      "get": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "取得全部 Post 資料",
+        "parameters": [
+          {
+            "name": "timeSort",
+            "in": "query"
+          },
+          {
+            "name": "q",
+            "in": "query"
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "取得特定 ID Post 資料",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/posts/": {
+      "post": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    }
+  },
+  "definitions": {},
+  "scheme": [
+    "http",
+    "https"
+  ]
+}
