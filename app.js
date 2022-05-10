@@ -38,20 +38,23 @@ const resErrorProd = (err, res) => {
     console.error('重大錯誤', err);
     res.status(500).send({
       status: 'error',
-      message: '請聯絡系統商'
+      message: '請聯絡系統商',
     });
   }
 };
 
 const resErrorDev = (err, res) => {
+  console.log('發現resErrorDev');
   res.status(err.statusCode).send({
     message: err.message,
     error: err,
     stack: err.stack,
   });
+  res.end();
 };
 
 app.use(function (err, req, res, next) {
+  err.statusCode = err.statusCode || 500;
   // 開發者模式
   if (process.env.NODE_ENV === 'dev') {
     return resErrorDev(err, res);

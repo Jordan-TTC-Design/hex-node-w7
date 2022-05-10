@@ -3,10 +3,12 @@ const router = express.Router();
 const multiparty = require('multiparty');
 const imgur = require('imgur-node-api');
 const dotenv = require('dotenv');
+const handleErrorAsync = require('../services/handleErrorAsync');
+const { appError } = require('../services/errorHandlers');
 
 dotenv.config({ path: './config.env' });
 // 上傳圖片
-router.post('/image', async (req, res, next) => {
+router.post('/image',  handleErrorAsync(async (req, res, next) => {
   let form = new multiparty.Form();
   form.parse(req, async (err, fields, file) => {
     const imgFile = file.image[0];
@@ -17,13 +19,7 @@ router.post('/image', async (req, res, next) => {
       imgur.upload(imgFile.path, (err, image) => {
         console.log(image);
         if (err) {
-          res
-            .status(400)
-            .send({
-              status: false,
-              message: err,
-            })
-            .end();
+            appError(400, err, next);
         } else {
           res
             .status(200)
@@ -36,15 +32,9 @@ router.post('/image', async (req, res, next) => {
         }
       });
     } else {
-      res
-        .status(400)
-        .send({
-          status: false,
-          message: '沒有選擇圖片',
-        })
-        .end();
+        appError(400, '沒有選擇圖片', next);
     }
   });
-});
+}));
 
 module.exports = router;

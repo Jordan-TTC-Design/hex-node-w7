@@ -14,9 +14,7 @@ const usersController = {
       // 時間排序
       const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
       const keyword =
-        req.query.q !== undefined
-          ? { name: new RegExp(req.query.q) }
-          : {};
+        req.query.q !== undefined ? { name: new RegExp(req.query.q) } : {};
       const result = await User.find(keyword).sort(timeSort);
       returnDataSuccess(res, '成功取得全部資料', result);
     } catch (err) {
@@ -28,20 +26,16 @@ const usersController = {
     /* 
       #swagger.tags = ['Users - 使用者']
     */
-    try {
-      const dataFormFront = req.body;
-      const result = await User.create({
-        name: dataFormFront.name,
-        email: dataFormFront.email,
-        photo: dataFormFront.photo,
-        password: dataFormFront.password,
-        passwordReset: dataFormFront.passwordReset,
-        gender: dataFormFront.gender,
-      });
-      returnDataSuccess(res, '成功創建用戶', result);
-    } catch (err) {
-      allError(400, res, err);
-    }
+    const dataFormFront = req.body;
+    const result = await User.create({
+      name: dataFormFront.name,
+      email: dataFormFront.email,
+      photo: dataFormFront.photo,
+      password: dataFormFront.password,
+      passwordReset: dataFormFront.passwordReset,
+      gender: dataFormFront.gender,
+    });
+    returnDataSuccess(res, '成功創建用戶', result);
   },
 };
 

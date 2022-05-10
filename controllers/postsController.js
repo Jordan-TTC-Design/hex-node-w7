@@ -4,7 +4,7 @@ const {
   allSuccess,
   returnDataSuccess,
 } = require('../services/successHandlers');
-const { allError,appError } = require('../services/errorHandlers');
+const { allError, appError } = require('../services/errorHandlers');
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
@@ -19,23 +19,17 @@ const postsController = {
         }
       }
     */
-    try {
-      // 時間排序
-      const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
-      const keyword =
-        req.query.q !== undefined
-          ? { postContent: new RegExp(req.query.q) }
-          : {};
-      const result = await Post.find(keyword)
-        .populate({
-          path: 'user',
-          select: 'name photo',
-        })
-        .sort(timeSort);
-      returnDataSuccess(res, '成功取得全部資料', result);
-    } catch (err) {
-     return next(appError(400,'你沒有寫內容',next))
-    }
+    // 時間排序
+    const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
+    const keyword =
+      req.query.q !== undefined ? { postContent: new RegExp(req.query.q) } : {};
+    const result = await Post.find(keyword)
+      .populate({
+        path: 'user',
+        select: 'name photo',
+      })
+      .sort(timeSort);
+    returnDataSuccess(res, '成功取得全部資料', result);
   },
   // 取得特定 ID Post 資料
   async getPost(req, res, next) {
@@ -60,24 +54,20 @@ const postsController = {
     /* 
       #swagger.tags = ['Posts - 貼文']
     */
-    try {
-      const dataFormFront = req.body;
-      if (
-        dataFormFront.postContent.length === 0 &&
-        dataFormFront.postImgUrl.length === 0
-      ) {
-        allError(400, res, '貼文內容和貼文圖片至少有一項須填寫');
-      } else {
-        const result = await Post.create({
-          user: dataFormFront.user,
-          postContent: dataFormFront.postContent,
-          postImgUrl: dataFormFront.postImgUrl,
-          postTags: dataFormFront.postTags,
-        });
-        returnDataSuccess(res, '成功新增一筆資料', result);
-      }
-    } catch (err) {
-      allError(400, res, err);
+    const dataFormFront = req.body;
+    if (
+      dataFormFront.postContent.length === 0 &&
+      dataFormFront.postImgUrl.length === 0
+    ) {
+      appError(400, '貼文內容和貼文圖片至少有一項須填寫', next);
+    } else {
+      const result = await Post.create({
+        user: dataFormFront.user,
+        postContent: dataFormFront.postContent,
+        postImgUrl: dataFormFront.postImgUrl,
+        postTags: dataFormFront.postTags,
+      });
+      returnDataSuccess(res, '成功新增一筆資料', result);
     }
   },
   // 刪除全部 Post 資料
@@ -91,7 +81,6 @@ const postsController = {
   },
   // 刪除特定 ID Post 資料
   async deletePost(req, res, next) {
-    try {
       const id = req.params.id;
       const result = await Post.deleteOne({ _id: id });
       if (result.deletedCount > 0) {
@@ -99,9 +88,6 @@ const postsController = {
       } else {
         allError(400, res, '無該筆資料');
       }
-    } catch (err) {
-      allError(400, res, err);
-    }
   },
 };
 
