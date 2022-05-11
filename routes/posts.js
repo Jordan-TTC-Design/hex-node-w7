@@ -4,12 +4,13 @@ const postsController = require('../controllers/postsController');
 const handleErrorAsync = require('../services/handleErrorAsync');
 
 const { allSuccess } = require('../services/successHandlers');
+const { allError } = require('../services/errorHandlers');
 
 const checkKeyWords = function (req, res, next) {
   if (req.query.q) {
     next();
   } else {
-    allError(400, res, '您未輸入關鍵字');
+    allError(400, '您未輸入關鍵字', next);
   }
 };
 

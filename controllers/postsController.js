@@ -4,7 +4,7 @@ const {
   allSuccess,
   returnDataSuccess,
 } = require('../services/successHandlers');
-const { allError, appError } = require('../services/errorHandlers');
+const { allError } = require('../services/errorHandlers');
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
@@ -38,15 +38,11 @@ const postsController = {
       #swagger.description = '取得特定 ID Post 資料'
     */
     const id = req.params.id;
-    try {
-      const result = await Post.find({ _id: id });
-      if (result.length > 0) {
-        returnDataSuccess(res, '成功取得該筆資料', result);
-      } else {
-        allError(400, res, '無該筆資料');
-      }
-    } catch (err) {
-      allError(400, res, err);
+    const result = await Post.find({ _id: id });
+    if (result.length > 0) {
+      returnDataSuccess(res, '成功取得該筆資料', result);
+    } else {
+      allError(400, '無該筆資料', next);
     }
   },
   // 新增一筆資料
@@ -59,7 +55,7 @@ const postsController = {
       dataFormFront.postContent.length === 0 &&
       dataFormFront.postImgUrl.length === 0
     ) {
-      appError(400, '貼文內容和貼文圖片至少有一項須填寫', next);
+      allError(400, '貼文內容和貼文圖片至少有一項須填寫', next);
     } else {
       const result = await Post.create({
         user: dataFormFront.user,
@@ -72,22 +68,18 @@ const postsController = {
   },
   // 刪除全部 Post 資料
   async deletePostAll(req, res, next) {
-    try {
-      await Post.deleteMany();
-      allSuccess(res, '成功刪除全部資料');
-    } catch (err) {
-      allError(400, res, err);
-    }
+    await Post.deleteMany();
+    allSuccess(res, '成功刪除全部資料');
   },
   // 刪除特定 ID Post 資料
   async deletePost(req, res, next) {
-      const id = req.params.id;
-      const result = await Post.deleteOne({ _id: id });
-      if (result.deletedCount > 0) {
-        allSuccess(res, '成功刪除該筆資料');
-      } else {
-        allError(400, res, '無該筆資料');
-      }
+    const id = req.params.id;
+    const result = await Post.deleteOne({ _id: id });
+    if (result.deletedCount > 0) {
+      allSuccess(res, '成功刪除該筆資料');
+    } else {
+      allError(400, '無該筆資料', next);
+    }
   },
 };
 
