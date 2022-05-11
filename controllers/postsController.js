@@ -5,6 +5,7 @@ const {
   returnDataSuccess,
 } = require('../services/successHandlers');
 const { allError } = require('../services/errorHandlers');
+
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
@@ -51,19 +52,31 @@ const postsController = {
       #swagger.tags = ['Posts - 貼文']
     */
     const dataFormFront = req.body;
+    const result = await Post.create({
+      user: dataFormFront.user,
+      postContent: dataFormFront.postContent,
+      postImgUrl: dataFormFront.postImgUrl,
+      postTags: dataFormFront.postTags,
+    });
+    returnDataSuccess(res, '成功新增一筆資料', result);
+  },
+  checkPostUser(req, res, next) {
+    const dataFormFront = req.body;
+    if (dataFormFront.user.length === 0) {
+      allError(400, '尚未登入', next);
+    } else {
+      next();
+    }
+  },
+  checkPost(req, res, next) {
+    const dataFormFront = req.body;
     if (
       dataFormFront.postContent.length === 0 &&
       dataFormFront.postImgUrl.length === 0
     ) {
       allError(400, '貼文內容和貼文圖片至少有一項須填寫', next);
     } else {
-      const result = await Post.create({
-        user: dataFormFront.user,
-        postContent: dataFormFront.postContent,
-        postImgUrl: dataFormFront.postImgUrl,
-        postTags: dataFormFront.postTags,
-      });
-      returnDataSuccess(res, '成功新增一筆資料', result);
+      next();
     }
   },
   // 刪除全部 Post 資料

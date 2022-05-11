@@ -35,7 +35,7 @@ const resErrorProd = (err, res) => {
       message: err.message,
     });
   } else {
-    console.error('重大錯誤', err);
+    console.error('自訂義以外的錯誤', err);
     res.status(500).send({
       status: 'error',
       message: '請聯絡系統商',
@@ -44,7 +44,6 @@ const resErrorProd = (err, res) => {
 };
 
 const resErrorDev = (err, res) => {
-  console.log('發現resErrorDev');
   res.status(err.statusCode).send({
     message: err.message,
     error: err,
@@ -65,6 +64,8 @@ app.use(function (err, req, res, next) {
 process.on('uncaughtedException', (err) => {
   console.error('Uncaughted Exception!');
   console.error(err);
+  // exit code 0 表示程式執行正常，正常退出程式執行序
+  // exit code 1 表示程式執行過程遇到某些問題或錯誤，非正常退出執行
   process.exit(1);
 });
 
