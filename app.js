@@ -73,4 +73,12 @@ process.on('unhandledREjection', (err, promise) => {
   console.error('未捕捉到的 rejection：', promise, '原因：', err);
 });
 
+app.use(function (req, res, next) {
+  res.status(404).send({
+    status: false,
+    statusCode: 404,
+    message: '抱歉，畫面找不到',
+  });
+});
+
 module.exports = app;
