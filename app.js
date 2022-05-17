@@ -3,7 +3,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const multiparty = require('multiparty');
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 //router
 const indexRouter = require('./routes/index');
@@ -42,6 +43,14 @@ const resErrorProd = (err, res) => {
     });
   }
 };
+
+// bcrypt.hash('tga5079', 12).then((res) => console.log(res));
+// bcrypt
+//   .compare(
+//     'tga5079',
+//     '$2a$12$po8Gu8YuLam8fh4EFF4L7u3EMPpSirbXU2nlv.W18K9JAEzhewzGm',
+//   )
+//   .then((res) => console.log(res));
 
 const resErrorDev = (err, res) => {
   res.status(err.statusCode).send({

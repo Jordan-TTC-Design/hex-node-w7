@@ -1,7 +1,24 @@
 const User = require('../models/usersModel');
 const { returnDataSuccess } = require('../services/successHandlers');
 const { allError } = require('../services/errorHandlers');
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
+const jwt = require('jsonwebtoken');
 
+const generateSendJWT = (res, statusCode, user) => {
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_DAY,
+  });
+  user.password = undefined;
+  res.status(statusCode).send({
+    status: true,
+    user: {
+      token,
+      id: user._id,
+      name: user.name,
+    },
+  });
+};
 const usersController = {
   // 取得全部用戶資料
   async getUserAll(req, res, next) {
@@ -16,20 +33,44 @@ const usersController = {
     returnDataSuccess(res, '成功取得全部資料', result);
   },
   // 創建用戶
-  async newUser(req, res, next) {
-    /* 
-      #swagger.tags = ['Users - 使用者']
-    */
+  async singUp(req, res, next) {
     const dataFormFront = req.body;
+    let { name, email, password, photo, passwordReset, gender } = req.body;
+    if (!name || !email || !password || !passwordReset || !gender) {
+      allError(400, '欄位未填寫正確', next);
+    }
+    if (!validator.isLength(password, { min: 8 })) {
+      allError(400, '密碼字數低於8碼', next);
+    }
+    if (!validator.isEmail(email)) {
+      allError(400, 'Email格式不正確', next);
+    }
+    secretPassword = await bcrypt.hash(password, 12);
     const result = await User.create({
-      name: dataFormFront.name,
-      email: dataFormFront.email,
-      photo: dataFormFront.photo,
-      password: dataFormFront.password,
-      passwordReset: dataFormFront.passwordReset,
-      gender: dataFormFront.gender,
+      name: name,
+      email: email,
+      photo: photo,
+      password: secretPassword,
+      passwordReset: passwordReset,
+      gender: gender,
     });
-    returnDataSuccess(res, '成功創建用戶', result);
+    generateSendJWT(res, 201, result);
+  },
+  async logIn(req, res, next) {
+    const { email, password } = req.body;
+    if(!email||!password){
+      allError(400, '欄位未填寫完全', next);
+    }
+    if (!validator.isEmail(email)) {
+      allError(400, 'Email格式不正確', next);
+    }
+    const result = await User.findOne({ email: email}).select('+password');
+    console.log(result);
+    const auth = await bcrypt.compare(password, result.password);
+    if(!auth) {
+      allError(400, '您的密碼錯誤', next);
+    }
+    generateSendJWT(res, 200, result);
   },
   checkName(req, res, next) {
     if (req.body.name.length > 0 || req.body.name !== undefined) {
@@ -39,7 +80,7 @@ const usersController = {
     }
   },
   checkEmail(req, res, next) {
-    var emailPat = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;//true,說明email格式正確
+    var emailPat = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/; //true,說明email格式正確
     if (req.body.email.match(emailPat)) {
       next();
     } else {

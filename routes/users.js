@@ -5,13 +5,23 @@ const handleErrorAsync = require('../services/handleErrorAsync');
 
 // 取得全部user資料
 router.get('/all', handleErrorAsync(usersController.getUserAll));
-// 創建user
+
+// 註冊
 router.post(
-  '/new',
+  '/sign-up',
   usersController.checkName,
   usersController.checkEmail,
   usersController.checkPassword,
-  handleErrorAsync(usersController.newUser),
+  handleErrorAsync(usersController.singUp),
 );
+
+// 登入
+router.post(
+  '/log-in',
+  usersController.checkEmail,
+  usersController.checkPassword,
+  handleErrorAsync(usersController.logIn),
+);
+
 
 module.exports = router;
