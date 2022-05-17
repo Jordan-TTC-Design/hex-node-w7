@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts/all?timeSort=asc",
+					"raw": "http://hex-work-w5.herokuapp.com/posts/all?timeSort=asc",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -45,7 +45,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/users/all?timeSort=asc&q=",
+					"raw": "http://hex-work-w5.herokuapp.com/users/all?timeSort=asc&q=",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -78,7 +78,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts/6268e732f2f0ba4e76430326",
+					"raw": "http://hex-work-w5.herokuapp.com/posts/6268e732f2f0ba4e76430326",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -110,7 +110,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts",
+					"raw": "http://hex-work-w5.herokuapp.com/posts",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -141,7 +141,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/other/image",
+					"raw": "http://hex-work-w5.herokuapp.com/other/image",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -173,7 +173,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/users/new",
+					"raw": "http://hex-work-w5.herokuapp.com/users/new",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -196,7 +196,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts/all",
+					"raw": "http://hex-work-w5.herokuapp.com/posts/all",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -219,7 +219,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts/62768104e55e42be426df5",
+					"raw": "http://hex-work-w5.herokuapp.com/posts/62768104e55e42be426df5",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -242,7 +242,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8080/posts?page=1&limit=10",
+					"raw": "http://hex-work-w5.herokuapp.com/posts?page=1&limit=10",
 					"protocol": "http",
 					"host": [
 						"127",
