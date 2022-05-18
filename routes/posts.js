@@ -3,6 +3,7 @@ const router = express.Router();
 const postsController = require('../controllers/postsController');
 const handleErrorAsync = require('../services/handleErrorAsync');
 const usersController = require('../controllers/usersController');
+const { isAuth } = require('../services/authHandlers');
 
 // 取得全部 Post 資料
 router.get('/all', handleErrorAsync(postsController.getPostAll));
@@ -13,7 +14,7 @@ router.get('/:id', handleErrorAsync(postsController.getPost));
 // 新增一筆資料
 router.post(
   '/',
-  handleErrorAsync(usersController.isAuth),
+  handleErrorAsync(isAuth),
   postsController.checkPost,
   handleErrorAsync(postsController.newPost),
 );

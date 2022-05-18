@@ -13,7 +13,7 @@ router.post(
   usersController.checkName,
   usersController.checkEmail,
   usersController.checkPassword,
-  handleErrorAsync(usersController.singUp),
+  handleErrorAsync(usersController.signUp),
 );
 
 // 登入

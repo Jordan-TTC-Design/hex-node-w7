@@ -19,8 +19,7 @@ const usersController = {
     returnDataSuccess(res, '成功取得全部資料', result);
   },
   // 創建用戶
-  async singUp(req, res, next) {
-    const dataFormFront = req.body;
+  async signUp(req, res, next) {
     let { name, email, password, photo, passwordReset, gender } = req.body;
     if (!name || !email || !password || !passwordReset || !gender) {
       allError(400, '欄位未填寫正確', next);
@@ -44,7 +43,7 @@ const usersController = {
   },
   async updateUserData(req, res, next) {
     const { name, email, passwordReset, photo, gender } = req.body;
-    if (!name || !email || !gender) {
+    if (!name  || !gender) {
       allError(400, '資料未填寫完全', next);
     }
     if (!validator.isLength(name, { min: 1 })) {

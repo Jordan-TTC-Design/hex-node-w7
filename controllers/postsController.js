@@ -51,6 +51,7 @@ const postsController = {
     /* 
       #swagger.tags = ['Posts - 貼文']
     */
+   console.log(req.user.id);
     const dataFormFront = req.body;
     const result = await Post.create({
       user: req.user.id,
@@ -70,6 +71,7 @@ const postsController = {
   },
   checkPost(req, res, next) {
     const dataFormFront = req.body;
+    console.log(dataFormFront)
     if (
       dataFormFront.postContent.length === 0 &&
       dataFormFront.postImgUrl.length === 0
