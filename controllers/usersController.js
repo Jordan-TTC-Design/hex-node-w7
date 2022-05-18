@@ -42,8 +42,30 @@ const usersController = {
     });
     generateSendJWT(res, 201, result, '註冊成功');
   },
+  async updateUserData(req, res, next) {
+    const { name, email, passwordReset, photo, gender } = req.body;
+    if (!name || !email || !gender) {
+      allError(400, '資料未填寫完全', next);
+    }
+    if (!validator.isLength(name, { min: 1 })) {
+      allError(400, '暱稱最少一個字元', next);
+    }
+    const result = await User.findByIdAndUpdate(req.user.id, {
+      name,
+      email,
+      passwordReset,
+      photo,
+      gender,
+    });
+    returnDataSuccess(res, '成功變更用戶資料');
+  },
+  getMyPofile(req, res, next) {
+    const result = req.user;
+    returnDataSuccess(res, '成功取得用戶資料', result);
+  },
   async logIn(req, res, next) {
     const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       allError(400, '欄位未填寫完全', next);
     }
@@ -51,7 +73,9 @@ const usersController = {
       allError(400, 'Email格式不正確', next);
     }
     const result = await User.findOne({ email: email }).select('+password');
-    console.log(result);
+    if(!result){
+      allError(400, '沒有此帳號', next);
+    }
     const auth = await bcrypt.compare(password, result.password);
     if (!auth) {
       allError(400, '您的密碼錯誤', next);
@@ -86,8 +110,8 @@ const usersController = {
     });
   },
   isSamePassword(req, res, next) {
-    const { oldPassword,password } = req.body;
-    if(oldPassword===password){
+    const { oldPassword, password } = req.body;
+    if (oldPassword === password) {
       allError(400, '新密碼與原密碼相同', next);
     }
     next();
