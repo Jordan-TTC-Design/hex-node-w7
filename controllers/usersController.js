@@ -1,24 +1,11 @@
 const User = require('../models/usersModel');
 const { returnDataSuccess } = require('../services/successHandlers');
 const { allError } = require('../services/errorHandlers');
+const { generateSendJWT } = require('../services/authHandlers');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
-const generateSendJWT = (res, statusCode, user) => {
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_DAY,
-  });
-  user.password = undefined;
-  res.status(statusCode).send({
-    status: true,
-    user: {
-      token,
-      id: user._id,
-      name: user.name,
-    },
-  });
-};
 const usersController = {
   // 取得全部用戶資料
   async getUserAll(req, res, next) {
@@ -54,7 +41,7 @@ const usersController = {
       passwordReset: passwordReset,
       gender: gender,
     });
-    generateSendJWT(res, 201, result);
+    generateSendJWT(res, 201, result, '註冊成功');
   },
   async logIn(req, res, next) {
     const { email, password } = req.body;
@@ -70,7 +57,7 @@ const usersController = {
     if (!auth) {
       allError(400, '您的密碼錯誤', next);
     }
-    generateSendJWT(res, 200, result);
+    generateSendJWT(res, 200, result, '登入成功');
   },
   async getYourPofile(req, res, next) {
     res.status(200).send({
@@ -86,8 +73,8 @@ const usersController = {
     newPassword = await bcrypt.hash(password, 12);
     const result = await User.findByIdAndUpdate(req.user.id, {
       password: newPassword,
-    })
-    generateSendJWT(res, 200, result);
+    });
+    generateSendJWT(res, 200, result, '密碼變更成功');
   },
   async isAuth(req, res, next) {
     let token;

@@ -53,7 +53,7 @@ const postsController = {
     */
     const dataFormFront = req.body;
     const result = await Post.create({
-      user: dataFormFront.user,
+      user: req.user.id,
       postContent: dataFormFront.postContent,
       postImgUrl: dataFormFront.postImgUrl,
       postTags: dataFormFront.postTags,
