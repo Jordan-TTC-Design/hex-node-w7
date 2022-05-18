@@ -4,7 +4,6 @@ const { allError } = require('../services/errorHandlers');
 const { generateSendJWT } = require('../services/authHandlers');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const jwt = require('jsonwebtoken');
 
 const usersController = {
   // 取得全部用戶資料
@@ -59,13 +58,11 @@ const usersController = {
     }
     generateSendJWT(res, 200, result, '登入成功');
   },
-  async getYourPofile(req, res, next) {
-    res.status(200).send({
-      status: true,
-      user: req.user,
-    });
+  getMyPofile(req, res, next) {
+    const result = req.user;
+    returnDataSuccess(res, '成功取得用戶資料', result);
   },
-  async changePassword(req, res, next) {
+  async updatePassword(req, res, next) {
     const { password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
       allError(400, '密碼輸入不一致', next);
@@ -76,30 +73,23 @@ const usersController = {
     });
     generateSendJWT(res, 200, result, '密碼變更成功');
   },
-  async isAuth(req, res, next) {
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer ')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
+  checkOldPassword(req, res, next) {
+    const { oldPassword } = req.body;
+    if (!oldPassword) {
+      allError(400, '原密碼尚未填寫', next);
     }
-    if (!token) {
-      allError(401, '尚未登入', next);
-    }
-    // token解密
-    const decoded = await new Promise((resolve, reject) => {
-      jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(payload);
-        }
-      });
+    bcrypt.compare(oldPassword, req.user.password).then((res) => {
+      if (!res) {
+        allError(400, '原密碼填寫錯誤', next);
+      }
+      next();
     });
-    const currentUser = await User.findById(decoded.id);
-    // req.user是自定義的屬性資料
-    req.user = currentUser;
+  },
+  isSamePassword(req, res, next) {
+    const { oldPassword,password } = req.body;
+    if(oldPassword===password){
+      allError(400, '新密碼與原密碼相同', next);
+    }
     next();
   },
   checkName(req, res, next) {

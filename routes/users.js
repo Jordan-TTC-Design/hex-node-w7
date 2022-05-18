@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const usersController = require('../controllers/usersController');
 const handleErrorAsync = require('../services/handleErrorAsync');
+const { isAuth,isAuthWithPassword } = require('../services/authHandlers');
 
 // 取得全部user資料
 router.get('/all', handleErrorAsync(usersController.getUserAll));
@@ -26,15 +27,24 @@ router.post(
 // 檢查登入
 router.get(
   '/profile',
-  handleErrorAsync(usersController.isAuth),
-  handleErrorAsync(usersController.getYourPofile),
+  handleErrorAsync(isAuth),
+  handleErrorAsync(usersController.getMyPofile),
 );
 
-// 檢查登入
+// 變更密碼
 router.post(
-  '/change-password',
-  handleErrorAsync(usersController.isAuth),
-  handleErrorAsync(usersController.changePassword),
+  '/update-password',
+  handleErrorAsync(isAuthWithPassword),
+  usersController.checkOldPassword,
+  usersController.isSamePassword,
+  handleErrorAsync(usersController.updatePassword),
+);
+
+// 重設密碼
+router.post(
+  '/reset-password',
+  handleErrorAsync(isAuth),
+  handleErrorAsync(usersController.updatePassword),
 );
 
 module.exports = router;
