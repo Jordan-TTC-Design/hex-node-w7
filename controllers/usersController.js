@@ -58,19 +58,62 @@ const usersController = {
   },
   async logIn(req, res, next) {
     const { email, password } = req.body;
-    if(!email||!password){
+    if (!email || !password) {
       allError(400, '欄位未填寫完全', next);
     }
     if (!validator.isEmail(email)) {
       allError(400, 'Email格式不正確', next);
     }
-    const result = await User.findOne({ email: email}).select('+password');
+    const result = await User.findOne({ email: email }).select('+password');
     console.log(result);
     const auth = await bcrypt.compare(password, result.password);
-    if(!auth) {
+    if (!auth) {
       allError(400, '您的密碼錯誤', next);
     }
     generateSendJWT(res, 200, result);
+  },
+  async getYourPofile(req, res, next) {
+    res.status(200).send({
+      status: true,
+      user: req.user,
+    });
+  },
+  async changePassword(req, res, next) {
+    const { password, confirmPassword } = req.body;
+    if (password !== confirmPassword) {
+      allError(400, '密碼輸入不一致', next);
+    }
+    newPassword = await bcrypt.hash(password, 12);
+    const result = await User.findByIdAndUpdate(req.user.id, {
+      password: newPassword,
+    })
+    generateSendJWT(res, 200, result);
+  },
+  async isAuth(req, res, next) {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer ')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+    if (!token) {
+      allError(401, '尚未登入', next);
+    }
+    // token解密
+    const decoded = await new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(payload);
+        }
+      });
+    });
+    const currentUser = await User.findById(decoded.id);
+    // req.user是自定義的屬性資料
+    req.user = currentUser;
+    next();
   },
   checkName(req, res, next) {
     if (req.body.name.length > 0 || req.body.name !== undefined) {

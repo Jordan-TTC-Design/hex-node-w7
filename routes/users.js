@@ -23,5 +23,18 @@ router.post(
   handleErrorAsync(usersController.logIn),
 );
 
+// 檢查登入
+router.get(
+  '/profile',
+  handleErrorAsync(usersController.isAuth),
+  handleErrorAsync(usersController.getYourPofile),
+);
+
+// 檢查登入
+router.post(
+  '/change-password',
+  handleErrorAsync(usersController.isAuth),
+  handleErrorAsync(usersController.changePassword),
+);
 
 module.exports = router;
