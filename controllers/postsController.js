@@ -30,6 +30,11 @@ const postsController = {
         select: 'name photo',
       })
       .sort(timeSort);
+      if(req.user !== undefined){
+        result.isLogin = true;
+      }else{
+        result.isLogin = false;
+      }
     returnDataSuccess(res, '成功取得全部資料', result);
   },
   // 取得特定 ID Post 資料
@@ -40,6 +45,11 @@ const postsController = {
     */
     const id = req.params.id;
     const result = await Post.find({ _id: id });
+    if(req.user.id !== undefined){
+      result.isLogin = true;
+    }else{
+      result.isLogin = false;
+    }
     if (result.length > 0) {
       returnDataSuccess(res, '成功取得該筆資料', result);
     } else {

@@ -43,6 +43,31 @@ const isAuth = async (req, res, next) => {
   req.user = currentUser;
   next();
 };
+const isAuthWithOutError = async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+  if (token) {
+    // token解密
+    const decoded = await new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(payload);
+        }
+      });
+    });
+    const currentUser = await User.findById(decoded.id);
+    // req.user是自定義的屬性資料
+    req.user = currentUser;
+  }
+  next();
+};
 const isAuthWithPassword = async (req, res, next) => {
   let token;
   if (
@@ -69,4 +94,9 @@ const isAuthWithPassword = async (req, res, next) => {
   next();
 };
 
-module.exports = { generateSendJWT, isAuth, isAuthWithPassword };
+module.exports = {
+  generateSendJWT,
+  isAuth,
+  isAuthWithPassword,
+  isAuthWithOutError,
+};

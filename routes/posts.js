@@ -3,13 +3,21 @@ const router = express.Router();
 const postsController = require('../controllers/postsController');
 const handleErrorAsync = require('../services/handleErrorAsync');
 const usersController = require('../controllers/usersController');
-const { isAuth } = require('../services/authHandlers');
+const { isAuth, isAuthWithOutError } = require('../services/authHandlers');
 
 // 取得全部 Post 資料
-router.get('/all', handleErrorAsync(postsController.getPostAll));
+router.get(
+  '/all',
+  handleErrorAsync(isAuthWithOutError),
+  handleErrorAsync(postsController.getPostAll),
+);
 
 // 取得特定 ID Post 資料
-router.get('/:id', handleErrorAsync(postsController.getPost));
+router.get(
+  '/:id',
+  handleErrorAsync(isAuthWithOutError),
+  handleErrorAsync(postsController.getPost),
+);
 
 // 新增一筆資料
 router.post(

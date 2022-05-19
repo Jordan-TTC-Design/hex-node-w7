@@ -24,7 +24,7 @@ router.post('/image',  handleErrorAsync(async (req, res, next) => {
           res
             .status(200)
             .send({
-              status: true,
+              status: 'success',
               data: image.data.link,
               message: '成功上傳圖片',
             })
