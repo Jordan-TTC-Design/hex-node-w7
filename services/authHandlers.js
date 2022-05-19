@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/usersModel');
+const { allError } = require('../services/errorHandlers');
 
 function generateSendJWT(res, statusCode, user, message) {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
