@@ -1,7 +1,7 @@
 function allSuccess(res, message) {
   res
     .send({
-      status: true,
+      status: 'success',
       message: message,
     })
     .end();
@@ -9,7 +9,7 @@ function allSuccess(res, message) {
 function returnDataSuccess(res, message, data) {
   res
     .send({
-      status: true,
+      status: 'success',
       data: data,
       message: message,
     })

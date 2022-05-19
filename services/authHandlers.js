@@ -7,7 +7,7 @@ function generateSendJWT(res, statusCode, user, message) {
   });
   user.password = undefined;
   res.status(statusCode).send({
-    status: true,
+    status: 'success',
     user: {
       token,
       id: user._id,
