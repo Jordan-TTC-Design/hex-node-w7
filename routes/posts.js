@@ -33,4 +33,19 @@ router.delete('/all', handleErrorAsync(postsController.deletePostAll));
 // 刪除特定 ID Post 資料
 router.delete('/:id', handleErrorAsync(postsController.deletePost));
 
+// 新增特定 ID Post喜歡
+router.post(
+  '/:id/likes',
+  handleErrorAsync(isAuth),
+  handleErrorAsync(postsController.addLikes),
+);
+
+// 刪除特定 ID Post喜歡
+router.delete(
+  '/:id/likes',
+  handleErrorAsync(isAuth),
+  handleErrorAsync(postsController.deleteLikes),
+);
+
+
 module.exports = router;

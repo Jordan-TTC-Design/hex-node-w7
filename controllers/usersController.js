@@ -1,4 +1,5 @@
 const User = require('../models/usersModel');
+const Post = require('../models/postsModel');
 const { returnDataSuccess } = require('../services/successHandlers');
 const { allError } = require('../services/errorHandlers');
 const { generateSendJWT } = require('../services/authHandlers');
@@ -43,7 +44,7 @@ const usersController = {
   },
   async updateUserData(req, res, next) {
     const { name, email, passwordReset, photo, gender } = req.body;
-    if (!name  || !gender) {
+    if (!name || !gender) {
       allError(400, '資料未填寫完全', next);
     }
     if (!validator.isLength(name, { min: 1 })) {
@@ -58,10 +59,6 @@ const usersController = {
     });
     returnDataSuccess(res, '成功變更用戶資料');
   },
-  getMyPofile(req, res, next) {
-    const result = req.user;
-    returnDataSuccess(res, '成功取得用戶資料', result);
-  },
   async logIn(req, res, next) {
     const { email, password } = req.body;
     console.log(email, password);
@@ -72,7 +69,7 @@ const usersController = {
       allError(400, 'Email格式不正確', next);
     }
     const result = await User.findOne({ email: email }).select('+password');
-    if(!result){
+    if (!result) {
       allError(400, '沒有此帳號', next);
     }
     const auth = await bcrypt.compare(password, result.password);
@@ -95,6 +92,18 @@ const usersController = {
       password: newPassword,
     });
     generateSendJWT(res, 200, result, '密碼變更成功');
+  },
+  async getLikesList(req, res, next) {
+    const likesList = await Post.find({
+      postLikes: { $in: [req.user.id] },
+    }).populate({
+      path: 'user',
+      select: 'name _id',
+    });
+    res.status(200).send({
+      status: 'success',
+      likesList,
+    });
   },
   checkOldPassword(req, res, next) {
     const { oldPassword } = req.body;

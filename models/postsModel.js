@@ -4,7 +4,7 @@ const PostSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.ObjectId,
-      ref:"user",
+      ref: 'user',
       require: [true, 'user為必填資訊'],
     },
     postContent: {
@@ -13,10 +13,7 @@ const PostSchema = new mongoose.Schema(
     },
     postImgUrl: String,
     postTags: [{ type: String }],
-    postLikes: {
-      type: Number,
-      default: 0,
-    },
+    postLikes: [{ type: mongoose.Schema.ObjectId, ref: 'user' }],
     postComments: {
       type: Number,
       default: 0,

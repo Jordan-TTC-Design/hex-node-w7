@@ -53,4 +53,10 @@ router.post(
   handleErrorAsync(usersController.updatePassword),
 );
 
+router.get(
+  '/get-likes-list',
+  handleErrorAsync(isAuth),
+  handleErrorAsync(usersController.getLikesList),
+);
+
 module.exports = router;

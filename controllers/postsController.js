@@ -9,17 +9,6 @@ const { allError } = require('../services/errorHandlers');
 const postsController = {
   // 取得全部 Post 資料
   async getPostAll(req, res, next) {
-    /* 
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '取得全部 Post 資料'
-      #swagger.response[200] ={
-        description:'貼文資訊', 
-        schema:{
-          "status":true,
-          "data":[{}]
-        }
-      }
-    */
     // 時間排序
     const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
     const keyword =
@@ -30,24 +19,22 @@ const postsController = {
         select: 'name photo',
       })
       .sort(timeSort);
-      if(req.user !== undefined){
-        result.isLogin = true;
-      }else{
-        result.isLogin = false;
-      }
+    if (req.user !== undefined) {
+      result.isLogin = true;
+    } else {
+      result.isLogin = false;
+    }
     returnDataSuccess(res, '成功取得全部資料', result);
   },
   // 取得特定 ID Post 資料
   async getPost(req, res, next) {
-    /* 
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '取得特定 ID Post 資料'
-    */
     const id = req.params.id;
+    console.log(id)
     const result = await Post.find({ _id: id });
-    if(req.user.id !== undefined){
+    console.log(result)
+    if (req.user !== undefined) {
       result.isLogin = true;
-    }else{
+    } else {
       result.isLogin = false;
     }
     if (result.length > 0) {
@@ -58,10 +45,7 @@ const postsController = {
   },
   // 新增一筆資料
   async newPost(req, res, next) {
-    /* 
-      #swagger.tags = ['Posts - 貼文']
-    */
-   console.log(req.user.id);
+    console.log(req.user.id);
     const dataFormFront = req.body;
     const result = await Post.create({
       user: req.user.id,
@@ -81,7 +65,7 @@ const postsController = {
   },
   checkPost(req, res, next) {
     const dataFormFront = req.body;
-    console.log(dataFormFront)
+    console.log(dataFormFront);
     if (
       dataFormFront.postContent.length === 0 &&
       dataFormFront.postImgUrl.length === 0
@@ -105,6 +89,32 @@ const postsController = {
     } else {
       allError(400, '無該筆資料', next);
     }
+  },
+  async addLikes(req, res, next) {
+    const _id = req.params.id;
+    const result = await Post.findOneAndUpdate(
+      { _id },
+      { $addToSet: { postLikes: req.user.id } },
+    );
+    console.log(result)
+    res.status(200).send({ 
+      status: 'success',
+      postId: _id,
+      userId:req.user.id
+    })
+  },
+  async deleteLikes(req, res, next) {
+    const _id = req.params.id;
+    const result = await Post.findOneAndUpdate(
+      { _id },
+      { $pull: { postLikes: req.user.id } },
+    );
+    console.log(result)
+    res.status(201).send({ 
+      status: 'success',
+      postId: _id,
+      userId:req.user.id
+    })
   },
 };
 
