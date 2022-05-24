@@ -29,9 +29,9 @@ const postsController = {
   // 取得特定 ID Post 資料
   async getPost(req, res, next) {
     const id = req.params.id;
-    console.log(id)
+    console.log(id);
     const result = await Post.find({ _id: id });
-    console.log(result)
+    console.log(result);
     if (req.user !== undefined) {
       result.isLogin = true;
     } else {
@@ -92,29 +92,31 @@ const postsController = {
   },
   async addLikes(req, res, next) {
     const _id = req.params.id;
+    const targetUserId = req.user.id;
     const result = await Post.findOneAndUpdate(
       { _id },
-      { $addToSet: { postLikes: req.user.id } },
+      { $addToSet: { postLikes: { userId: targetUserId } } },
     );
-    console.log(result)
-    res.status(200).send({ 
+    console.log(result);
+    res.status(200).send({
       status: 'success',
       postId: _id,
-      userId:req.user.id
-    })
+      userId: targetUserId,
+    });
   },
   async deleteLikes(req, res, next) {
     const _id = req.params.id;
+    const targetUserId = req.user.id;
     const result = await Post.findOneAndUpdate(
       { _id },
-      { $pull: { postLikes: req.user.id } },
+      { $pull: { postLikes: { userId: targetUserId } } },
     );
-    console.log(result)
-    res.status(201).send({ 
+    console.log(result);
+    res.status(201).send({
       status: 'success',
-      postId: _id,
-      userId:req.user.id
-    })
+      postId: result,
+      userId: targetUserId,
+    });
   },
 };
 

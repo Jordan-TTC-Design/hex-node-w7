@@ -2,7 +2,14 @@ var express = require('express');
 var router = express.Router();
 const usersController = require('../controllers/usersController');
 const handleErrorAsync = require('../services/handleErrorAsync');
-const { isAuth, isAuthWithPassword } = require('../services/authHandlers');
+const {
+  isAuth,
+  isAuthWithPassword,
+  checkEmail,
+  checkPassword,
+  checkOldPassword,
+  isSamePassword,
+} = require('../services/authHandlers');
 
 // 取得全部user資料
 router.get('/all', handleErrorAsync(usersController.getUserAll));
@@ -10,17 +17,16 @@ router.get('/all', handleErrorAsync(usersController.getUserAll));
 // 註冊
 router.post(
   '/sign-up',
-  usersController.checkName,
-  usersController.checkEmail,
-  usersController.checkPassword,
+  checkEmail,
+  checkPassword,
   handleErrorAsync(usersController.signUp),
 );
 
 // 登入
 router.post(
   '/log-in',
-  usersController.checkEmail,
-  usersController.checkPassword,
+  checkEmail,
+  checkPassword,
   handleErrorAsync(usersController.logIn),
 );
 
@@ -41,8 +47,8 @@ router.patch(
 router.post(
   '/update-password',
   handleErrorAsync(isAuthWithPassword),
-  usersController.checkOldPassword,
-  usersController.isSamePassword,
+  checkOldPassword,
+  isSamePassword,
   handleErrorAsync(usersController.updatePassword),
 );
 

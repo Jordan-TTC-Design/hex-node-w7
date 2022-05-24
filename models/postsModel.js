@@ -13,7 +13,19 @@ const PostSchema = new mongoose.Schema(
     },
     postImgUrl: String,
     postTags: [{ type: String }],
-    postLikes: [{ type: mongoose.Schema.ObjectId, ref: 'user' }],
+    postLikes: [
+      {
+        userId: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'user',
+        },
+        time: {
+          type: Date,
+          default: Date.now,
+        },
+        _id: false,
+      },
+    ],
     postComments: {
       type: Number,
       default: 0,

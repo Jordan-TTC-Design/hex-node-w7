@@ -6,9 +6,12 @@ const upload = require('../services/images');
 const { ImgurClient } = require('imgur');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
+const { isAuth } = require('../services/authHandlers');
+
 // 上傳圖片
 router.post(
   '/',
+  handleErrorAsync(isAuth),
   upload,
   handleErrorAsync(async (req, res, next) => {
     //multer會把資料放到req.files

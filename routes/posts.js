@@ -3,19 +3,19 @@ const router = express.Router();
 const postsController = require('../controllers/postsController');
 const handleErrorAsync = require('../services/handleErrorAsync');
 const usersController = require('../controllers/usersController');
-const { isAuth, isAuthWithOutError } = require('../services/authHandlers');
+const { isAuth, isLogin } = require('../services/authHandlers');
 
 // 取得全部 Post 資料
 router.get(
   '/all',
-  handleErrorAsync(isAuthWithOutError),
+  handleErrorAsync(isLogin),
   handleErrorAsync(postsController.getPostAll),
 );
 
 // 取得特定 ID Post 資料
 router.get(
   '/:id',
-  handleErrorAsync(isAuthWithOutError),
+  handleErrorAsync(isLogin),
   handleErrorAsync(postsController.getPost),
 );
 

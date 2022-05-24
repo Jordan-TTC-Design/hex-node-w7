@@ -25,12 +25,6 @@ const usersController = {
     if (!name || !email || !password || !passwordReset || !gender) {
       allError(400, '欄位未填寫正確', next);
     }
-    if (!validator.isLength(password, { min: 8 })) {
-      allError(400, '密碼字數低於8碼', next);
-    }
-    if (!validator.isEmail(email)) {
-      allError(400, 'Email格式不正確', next);
-    }
     secretPassword = await bcrypt.hash(password, 12);
     const result = await User.create({
       name: name,
@@ -95,69 +89,20 @@ const usersController = {
   },
   async getLikesList(req, res, next) {
     const likesList = await Post.find({
-      postLikes: { $in: [req.user.id] },
+      'postLikes.userId': { $in: [req.user.id] },
     }).populate({
-      path: 'user',
-      select: 'name _id',
+      path: 'postLikes',
+      select: 'name _id photo',
+    }).populate({
+      path: 'postLikes',
+      select: 'name _id photo',
     });
     res.status(200).send({
       status: 'success',
       likesList,
     });
   },
-  checkOldPassword(req, res, next) {
-    const { oldPassword } = req.body;
-    if (!oldPassword) {
-      allError(400, '原密碼尚未填寫', next);
-    }
-    bcrypt.compare(oldPassword, req.user.password).then((res) => {
-      if (!res) {
-        allError(400, '原密碼填寫錯誤', next);
-      }
-      next();
-    });
-  },
-  isSamePassword(req, res, next) {
-    const { oldPassword, password } = req.body;
-    if (oldPassword === password) {
-      allError(400, '新密碼與原密碼相同', next);
-    }
-    next();
-  },
-  checkName(req, res, next) {
-    if (req.body.name.length > 0 || req.body.name !== undefined) {
-      next();
-    } else {
-      allError(400, '用戶名稱尚未填寫', next);
-    }
-  },
-  checkEmail(req, res, next) {
-    var emailPat = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/; //true,說明email格式正確
-    if (req.body.email.match(emailPat)) {
-      next();
-    } else {
-      allError(400, 'Email尚未填寫或填寫不正確', next);
-    }
-  },
-  checkPassword(req, res, next) {
-    var checkNumber = /[0-9]/; //true,說明有數字
-    var checkEnglish = /[a-z]/i; //true,說明有英文字母
-    var checkChinese = new RegExp('[\\u4E00-\\u9FFF]+', 'g'); //true,說明有漢字
-    if (checkChinese.test(req.body.password)) {
-      allError(400, '密碼只能包含英文、數字', next);
-    } else if (req.body.password.length === 0) {
-      allError(400, '密碼尚未填寫', next);
-    } else if (req.body.password.length < 8) {
-      allError(400, '密碼少於8碼', next);
-    } else if (
-      checkNumber.test(req.body.password) === false ||
-      checkEnglish.test(req.body.password) === false
-    ) {
-      allError(400, '密碼需要包含數字與英文', next);
-    } else {
-      next();
-    }
-  },
+
 };
 
 module.exports = usersController;
