@@ -10,7 +10,7 @@ const validator = require('validator');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
-const otherRouter = require('./routes/other');
+const uploadRouter = require('./routes/upload');
 const swaggerUI = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 
@@ -28,7 +28,7 @@ app.use('/api-doc', swaggerUI.serve, swaggerUI.setup(swaggerFile));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
-app.use('/other', otherRouter);
+app.use('/upload', uploadRouter);
 
 const resErrorProd = (err, res) => {
   if (err.isOperational) {
