@@ -93,38 +93,46 @@ const postsController = {
   async addLikes(req, res, next) {
     const _id = req.params.id;
     const targetUserId = req.user.id;
-    const hadLiked = await Post.findOne({
-      _id: { $eq: _id },
-      'postLikes.userId': {
-        $in: targetUserId,
+    const result = await Post.findOneAndUpdate(
+      {
+        _id,
+        'postLikes.userId': {
+          $ne: targetUserId,
+        },
       },
-    });
-    if (!hadLiked) {
-      const result = await Post.findOneAndUpdate(
-        { _id },
-        { $addToSet: { postLikes: { userId: targetUserId } } },
-      );
+      { $addToSet: { postLikes: { userId: targetUserId } } },
+    );
+    if (result) {
       res.status(200).send({
         status: 'success',
         postId: _id,
         userId: targetUserId,
       });
     } else {
-      allError(400, '已按喜歡了', next);
+      allError(400, '已經加過了', next);
     }
   },
   async deleteLikes(req, res, next) {
     const _id = req.params.id;
     const targetUserId = req.user.id;
     const result = await Post.findOneAndUpdate(
-      { _id },
+      {
+        _id,
+        'postLikes.userId': {
+          $in: targetUserId,
+        },
+      },
       { $pull: { postLikes: { userId: targetUserId } } },
     );
-    res.status(201).send({
-      status: 'success',
-      postId: _id,
-      userId: targetUserId,
-    });
+    if (result) {
+      res.status(200).send({
+        status: 'success',
+        postId: _id,
+        userId: targetUserId,
+      });
+    } else {
+      allError(400, '已經刪除過了', next);
+    }
   },
 };
 

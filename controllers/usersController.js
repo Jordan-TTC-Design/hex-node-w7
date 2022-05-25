@@ -91,19 +91,22 @@ const usersController = {
     const targetUserId = req.user.id;
     const likesList = await Post.find({
       'postLikes.userId': { $in: targetUserId },
-    }).populate({
-      path: 'postLikes',
-      select: 'name _id photo',
-    }).populate({
-      path: 'postLikes',
-      select: 'name _id photo',
-    });
+    })
+      .sort({
+        'postLikes.time': -1,
+      })
+      .populate({
+        path: 'postLikes',
+        select: 'name _id photo',
+      })
+      .populate({
+        path: 'postLikes',
+        select: 'name _id photo',
+      });
     res.status(200).send({
       status: 'success',
       likesList,
     });
   },
-
 };
-
 module.exports = usersController;
