@@ -374,7 +374,7 @@
 				{
 					"name": "Post-刪除likes",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -402,13 +402,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/posts/62768104e55e42be426df5",
+							"raw": "{{URL}}/posts/{{postID}}",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"posts",
-								"62768104e55e42be426df5"
+								"{{postID}}"
 							]
 						}
 					},
@@ -521,6 +521,43 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "https://hex-node-w7.herokuapp.com",
+			"type": "string"
+		},
+		{
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODUwZWZhOGQ5ODQzNTIzNjljNTEwMyIsImlhdCI6MTY1MzQ1MzU4NCwiZXhwIjoxNjU0NjYzMTg0fQ.DREtwIaL52a20aki3zvnE3NcUivqWxwA1uExmmuaNFw",
+			"type": "string"
+		},
+		{
+			"key": "postID",
+			"value": "628ce216649a734cd6fd0164",
+			"type": "string"
 		}
 	]
 }
