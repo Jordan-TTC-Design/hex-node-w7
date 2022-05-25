@@ -88,8 +88,9 @@ const usersController = {
     generateSendJWT(res, 200, result, '密碼變更成功');
   },
   async getLikesList(req, res, next) {
+    const targetUserId = req.user.id;
     const likesList = await Post.find({
-      'postLikes.userId': { $in: [req.user.id] },
+      'postLikes.userId': { $in: targetUserId },
     }).populate({
       path: 'postLikes',
       select: 'name _id photo',

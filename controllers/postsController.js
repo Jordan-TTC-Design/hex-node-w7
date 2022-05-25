@@ -93,16 +93,25 @@ const postsController = {
   async addLikes(req, res, next) {
     const _id = req.params.id;
     const targetUserId = req.user.id;
-    const result = await Post.findOneAndUpdate(
-      { _id },
-      { $addToSet: { postLikes: { userId: targetUserId } } },
-    );
-    console.log(result);
-    res.status(200).send({
-      status: 'success',
-      postId: _id,
-      userId: targetUserId,
+    const hadLiked = await Post.findOne({
+      _id: { $eq: _id },
+      'postLikes.userId': {
+        $in: targetUserId,
+      },
     });
+    if (!hadLiked) {
+      const result = await Post.findOneAndUpdate(
+        { _id },
+        { $addToSet: { postLikes: { userId: targetUserId } } },
+      );
+      res.status(200).send({
+        status: 'success',
+        postId: _id,
+        userId: targetUserId,
+      });
+    } else {
+      allError(400, '已按喜歡了', next);
+    }
   },
   async deleteLikes(req, res, next) {
     const _id = req.params.id;
@@ -111,10 +120,9 @@ const postsController = {
       { _id },
       { $pull: { postLikes: { userId: targetUserId } } },
     );
-    console.log(result);
     res.status(201).send({
       status: 'success',
-      postId: result,
+      postId: _id,
       userId: targetUserId,
     });
   },
