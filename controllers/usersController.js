@@ -96,13 +96,9 @@ const usersController = {
         'postLikes.time': -1,
       })
       .populate({
-        path: 'postLikes',
+        path: 'user',
         select: 'name _id photo',
       })
-      .populate({
-        path: 'postLikes',
-        select: 'name _id photo',
-      });
     res.status(200).send({
       status: 'success',
       likesList,
