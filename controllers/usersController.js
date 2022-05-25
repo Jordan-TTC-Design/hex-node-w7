@@ -92,13 +92,17 @@ const usersController = {
     const likesList = await Post.find({
       'postLikes.userId': { $in: targetUserId },
     })
-      .sort({
-        'postLikes.time': -1,
-      })
+      .select({ postLikes: { $elemMatch: { userId: targetUserId } } })
       .populate({
         path: 'user',
         select: 'name _id photo',
-      })
+      });
+    // 把排序交給前端做
+    // likesList.sort((a, b) => {
+    //   const aTime = Date.parse(a.postLikes[0].time);
+    //   const bTime = Date.parse(b.postLikes[0].time);
+    //   return bTime - aTime;
+    // });
     res.status(200).send({
       status: 'success',
       likesList,
